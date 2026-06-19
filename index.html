@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Anaunim Interaction Manager</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Connected social networks">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">A</span>
+          <div>
+            <h1>Anaunim</h1>
+            <p>Interaction Manager</p>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="section-label">Networks</div>
+          <nav id="networkList" class="network-list" aria-label="Network filters"></nav>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="section-label">Connections</div>
+          <div id="connectionList" class="connection-list"></div>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Unified moderation queue</p>
+            <h2>Manage social interactions</h2>
+            <div id="backendStatus" class="backend-status">Static demo mode</div>
+          </div>
+          <div class="topbar-actions">
+            <button id="undoButton" class="button ghost" type="button" disabled>
+              <i data-lucide="rotate-ccw" data-fallback="U" aria-hidden="true"></i>
+              Undo
+            </button>
+            <button id="syncButton" class="button primary" type="button">
+              <i data-lucide="refresh-cw" data-fallback="S" aria-hidden="true"></i>
+              Sync
+            </button>
+            <button id="metaConnectButton" class="button ghost" type="button">
+              <i data-lucide="key-round" data-fallback="M" aria-hidden="true"></i>
+              Connect Meta
+            </button>
+          </div>
+        </header>
+
+        <section class="toolbar" aria-label="Interaction filters">
+          <label class="search-field">
+            <i data-lucide="search" data-fallback="Q" aria-hidden="true"></i>
+            <input id="searchInput" type="search" placeholder="Search comments, posts, handles" />
+          </label>
+
+          <div id="typeTabs" class="tabs" role="tablist" aria-label="Interaction type"></div>
+
+          <select id="statusFilter" class="select-control" aria-label="Status filter">
+            <option value="all">All statuses</option>
+            <option value="active">Active</option>
+            <option value="review">Needs review</option>
+            <option value="removed">Removed</option>
+          </select>
+        </section>
+
+        <section class="queue-panel" aria-label="Interaction queue">
+          <div class="queue-header">
+            <label class="select-all">
+              <input id="selectAllVisible" type="checkbox" />
+              <span>Select visible</span>
+            </label>
+            <div id="queueSummary" class="queue-summary"></div>
+          </div>
+
+          <div id="interactionList" class="interaction-list"></div>
+        </section>
+      </main>
+
+      <aside class="action-panel" aria-label="Bulk actions and network capability">
+        <section class="bulk-box">
+          <div class="panel-heading">
+            <p class="eyebrow">Bulk actions</p>
+            <h2 id="selectedCount">0 selected</h2>
+          </div>
+          <div class="bulk-actions">
+            <button id="removeSelectedButton" class="button danger" type="button" disabled>
+              <i data-lucide="trash-2" data-fallback="X" aria-hidden="true"></i>
+              Remove selected
+            </button>
+            <button id="clearSelectionButton" class="button ghost" type="button" disabled>
+              <i data-lucide="x" data-fallback="X" aria-hidden="true"></i>
+              Deselect
+            </button>
+          </div>
+        </section>
+
+        <section class="bulk-box">
+          <div class="panel-heading compact">
+            <p class="eyebrow">Remove by type</p>
+            <h2>Visible queue</h2>
+          </div>
+          <div id="typeBulkList" class="type-bulk-list"></div>
+        </section>
+
+        <section class="bulk-box">
+          <div class="panel-heading compact">
+            <p class="eyebrow">Adapter readiness</p>
+            <h2>Provider actions</h2>
+          </div>
+          <div id="capabilityList" class="capability-list"></div>
+        </section>
+
+        <section class="bulk-box">
+          <div class="panel-heading compact">
+            <p class="eyebrow">Removal jobs</p>
+            <h2>Queue history</h2>
+          </div>
+          <div id="jobList" class="job-list"></div>
+        </section>
+
+        <section class="bulk-box">
+          <div class="panel-heading compact">
+            <p class="eyebrow">Audit log</p>
+            <h2>Recent activity</h2>
+          </div>
+          <div id="auditList" class="audit-list"></div>
+        </section>
+      </aside>
+    </div>
+
+    <dialog id="confirmDialog" class="confirm-dialog">
+      <form method="dialog">
+        <div class="dialog-icon">
+          <i data-lucide="alert-triangle" data-fallback="!" aria-hidden="true"></i>
+        </div>
+        <h2 id="confirmTitle">Remove interactions?</h2>
+        <p id="confirmCopy"></p>
+        <div id="confirmBreakdown" class="confirm-breakdown"></div>
+        <div class="dialog-actions">
+          <button class="button ghost" value="cancel" type="submit">Cancel</button>
+          <button id="confirmRemoveButton" class="button danger" value="confirm" type="button">
+            Remove
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
