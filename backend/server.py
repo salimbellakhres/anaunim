@@ -31,6 +31,18 @@ META_SCOPES = [
     "instagram_manage_comments",
 ]
 
+STATIC_CONTENT_TYPES = {
+    ".html": "text/html; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".js": "application/javascript; charset=utf-8",
+    ".json": "application/json; charset=utf-8",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".svg": "image/svg+xml",
+    ".ico": "image/x-icon",
+}
+
 
 def load_env():
     if not ENV_PATH.exists():
@@ -943,6 +955,20 @@ class AnaunimHandler(BaseHTTPRequestHandler):
             if path == "/healthz":
                 write_json(self, 200, {"ok": True, "time": utc_now()})
                 return
+            if path == "/asset-check":
+                write_json(
+                    self,
+                    200,
+                    {
+                        "index": (ROOT / "index.html").exists(),
+                        "css": (ROOT / "styles.css").exists(),
+                        "js": (ROOT / "app.js").exists(),
+                        "assets": (ROOT / "assets").exists(),
+                        "cssContentType": STATIC_CONTENT_TYPES[".css"],
+                        "jsContentType": STATIC_CONTENT_TYPES[".js"],
+                    },
+                )
+                return
             if path == "/privacy":
                 html_response(
                     self,
@@ -1120,7 +1146,10 @@ class AnaunimHandler(BaseHTTPRequestHandler):
             return
 
         content = target.read_bytes()
-        content_type = mimetypes.guess_type(str(target))[0] or "application/octet-stream"
+        content_type = STATIC_CONTENT_TYPES.get(
+            target.suffix.lower(),
+            mimetypes.guess_type(str(target))[0] or "application/octet-stream",
+        )
         if target.suffix in {".html", ".js", ".css"}:
             cache_control = "no-store"
         else:
@@ -1128,6 +1157,7 @@ class AnaunimHandler(BaseHTTPRequestHandler):
 
         self.send_response(200)
         self.send_header("Content-Type", content_type)
+        self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("Content-Length", str(len(content)))
         self.send_header("Cache-Control", cache_control)
         self.end_headers()
