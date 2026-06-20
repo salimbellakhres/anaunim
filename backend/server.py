@@ -681,11 +681,14 @@ def require_meta_config():
 def http_json(url, method="GET", data=None):
     body = None
     headers = {"Accept": "application/json"}
+    actual_method = method
     if data is not None:
         body = urlencode(data).encode("utf-8")
         headers["Content-Type"] = "application/x-www-form-urlencoded"
+        if method == "GET":
+            actual_method = "POST"
 
-    request = Request(url, data=body, headers=headers, method=method)
+    request = Request(url, data=body, headers=headers, method=actual_method)
     try:
         with urlopen(request, timeout=20) as response:
             return json.loads(response.read().decode("utf-8"))
